@@ -100,11 +100,28 @@ function drawGraph(){
     //2 четверть
     context.beginPath();
     context.moveTo(centerX, centerY);
-    context.lineTo(1/25, centerY);
-    context.lineTo(centerX, radius);
+    context.lineTo(centerX-radius*25, centerY);
+    context.lineTo(centerX,centerY-radius*25/2);
     context.fill();
+
     //3 четверть
     context.fillRect(centerX-radius*25/2,centerY,radius*25/2,radius*25)
+
+    //4 четверть
+    context.beginPath();
+    context.moveTo(centerX, centerY); // Перемещаемся в центр круга
+    context.arc(centerX, centerY, radius*25/2, 0, Math.PI/2, false); // Рисуем дугу
+    context.closePath();
+    context.fill(); // Закрашиваем область, чтобы получить четверть круга
+}
+
+function drawPoint(x,y){
+    context.fillStyle='#cc1b71'
+    context.beginPath();
+    context.arc(x*25+150,-y*25+150,3, 0, Math.PI*2, false);
+    context.closePath()
+    context.fill()
+
 }
 
 function submitForm(){
@@ -113,6 +130,7 @@ function submitForm(){
     let r = document.getElementById("r").value
     console.log(x,y,r)
     drawGraph()
+    drawPoint(x,y)
 }
 drawGraph()
 
