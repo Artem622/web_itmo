@@ -100,8 +100,8 @@ function drawGraph(){
     //2 четверть
     context.beginPath();
     context.moveTo(centerX, centerY);
-    context.lineTo();
-    context.lineTo();
+    context.lineTo(1/25, centerY);
+    context.lineTo(centerX, radius);
     context.fill();
     //3 четверть
     context.fillRect(centerX-radius*25/2,centerY,radius*25/2,radius*25)
