@@ -1,6 +1,9 @@
+
 const graph = document.getElementById("graph");
 const context = graph.getContext("2d");
-
+let x = 1
+let y = 1
+let r = 1
 //Рисуем ДПСК
 function drawCellBackground(){
 
@@ -148,14 +151,39 @@ function checkY(y) {
         return false
     }
 }
-function submitForm(){
-    let x = document.getElementById("x").value
-    let y = Number(document.getElementById("y").value)
-    let r = document.getElementById("r").value
+
+function getData(){
+    x= parseInt(document.getElementById("x").value)
+    y = parseFloat(document.getElementById("y").value.replace(',','.'))
+    r = parseInt(document.getElementById("r").value)
     if (checkY(y) && checkYNull(y)){
         drawPoint(x,y)
-
+        return true
+    } else {
+        return false
     }
+}
+
+function submitForm(){
+    let cond = getData()
+    console.log('check')
+    console.log(x)
+    console.log(y)
+    console.log(r)
+    if (cond){
+        let url = new URL(`http://localhost:3000/index.php?x=${x}&y=${y}&r=${r}`)
+        // req.open('GET',url)
+        // req.send()
+        axios.get(url)
+            .then(response => {
+                const data = response.data;
+                console.log(`Ответ с сервера: ${data}`)
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+            });
+    }
+
 }
 
 drawGraph()
@@ -165,3 +193,4 @@ document.getElementById("form").addEventListener("submit", (event)=>{
     event.preventDefault()
     submitForm()
 })
+
