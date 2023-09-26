@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" href="css/style.css">
+    <link type="image/x-icon" href="/images/favicon-32x32.png" rel="icon">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
     <div class="wrapper">
-
         <div class="top">
 
             <div class="header">
@@ -38,7 +38,10 @@
                         <option value="3">3</option>
                     </select>
                     <p class="text_form">Choose Y coordinat:</p>
-                    <input type="text" value="1" class="input_text" id="y">
+                    <div class="popup" id="y_popup">
+                        <p class="popup_text" id="y_popup_text"></p>
+                    </div>
+                    <input type="text"  class="input_text" id="y">
                     <p class="text_form">Choose R:</p>
                     <select class="select_form" id="r">
                         <option value="1">1</option>
@@ -50,7 +53,6 @@
                     <button class="button" id="check">Check</button>
                 </form>
             </div>
-
         </div>
 
         <div class="footer">

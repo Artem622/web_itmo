@@ -123,16 +123,43 @@ function drawPoint(x,y){
     context.fill()
 
 }
+function setPopup(text){
+    document.getElementById('y_popup_text').textContent = text
+    document.getElementById('y_popup').style.display = 'flex'
 
+    setTimeout(()=>{
+        document.getElementById('y_popup').style.display = 'none'
+
+    },3000)
+}
+function checkYNull(y){
+    if (y != "" && !isNaN(y)){
+        return true
+    } else{
+        setPopup('Поле Y не может быть пустым')
+        return false
+    }
+}
+function checkY(y) {
+    if(-3 <= y && y <= 5){
+        return true
+    } else {
+        setPopup('Вы ввели некорректное значение Y')
+        return false
+    }
+}
 function submitForm(){
     let x = document.getElementById("x").value
-    let y = document.getElementById("y").value
+    let y = Number(document.getElementById("y").value)
     let r = document.getElementById("r").value
-    console.log(x,y,r)
-    drawGraph()
-    drawPoint(x,y)
+    if (checkY(y) && checkYNull(y)){
+        drawPoint(x,y)
+
+    }
 }
+
 drawGraph()
+document.getElementById('r').addEventListener("change", () => drawGraph())
 
 document.getElementById("form").addEventListener("submit", (event)=>{
     event.preventDefault()

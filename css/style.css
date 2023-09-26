@@ -35,8 +35,23 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+}
+.popup{
+    background-color: rgba(239, 66, 66, 0.76);;
+    width: 70%;
+    height: 10%;
+    border-radius: 10px;
+    display: none;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1%;
+}
 
-
+.popup_text{
+    font-size: 1rem;
+    font-family: monospace;
+    color: #000000;
 }
 .container1{
     width: 30vw;
