@@ -136,7 +136,7 @@ function setPopup(text){
     },3000)
 }
 function checkYNull(y){
-    if (y != "" && !isNaN(y)){
+    if ((y != "" && y != NaN) || y===0){
         return true
     } else{
         setPopup('Поле Y не может быть пустым')
@@ -165,19 +165,17 @@ function getData(){
 }
 
 function submitForm(){
+
     let cond = getData()
-    console.log('check')
-    console.log(x)
-    console.log(y)
-    console.log(r)
     if (cond){
-        let url = new URL(`http://localhost:3000/index.php?x=${x}&y=${y}&r=${r}`)
-        // req.open('GET',url)
-        // req.send()
+        let url =(`http://localhost:3000/answer.php?x=${x}&y=${y}&r=${r}`)
         axios.get(url)
             .then(response => {
                 const data = response.data;
-                console.log(`Ответ с сервера: ${data}`)
+                window.location=(`http://localhost:3000/answer.php`)
+
+
+                // ("php/answer.php")
             })
             .catch(error => {
                 console.error('Ошибка:', error);

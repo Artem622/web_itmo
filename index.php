@@ -24,9 +24,9 @@
 
                 </div>
 
-                <form class="container" id="form" action="/php/index.php" method="get" >
+                <form class="container" id="form">
                     <p class="text_form">Choose X coordinat:</p>
-                    <select class="select_form" id="x">
+                    <select name="x" class="select_form" id="x">
                         <option value="-5">-5</option>
                         <option value="-4">-4</option>
                         <option value="-3">-3</option>
@@ -41,9 +41,9 @@
                     <div class="popup" id="y_popup">
                         <p class="popup_text" id="y_popup_text"></p>
                     </div>
-                    <input type="text"  class="input_text" id="y">
+                    <input name="y" type="text"  class="input_text" id="y">
                     <p class="text_form">Choose R:</p>
-                    <select class="select_form" id="r">
+                    <select name="r" class="select_form" id="r">
                         <option value="1">1</option>
                         <option value="2">2</option>
                         <option selected value="3">3</option>
