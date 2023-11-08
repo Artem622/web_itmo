@@ -1,0 +1,186 @@
+*{
+    padding: 0;
+    margin: 0;
+    user-select: none;
+}
+
+.wrapper{
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.header{
+    min-height: 100px;
+    background-color: rgba(97, 234, 17);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.logo_itmo{
+    width: 15%;
+    height: auto;
+}
+
+.header_text{
+    font-family: monospace;
+    font-size: 1.4rem;
+    padding-top: 3%;
+    color: black;
+}
+
+.content{
+    height: 78vh;
+    background: linear-gradient(15deg, #8f22a5,#cb2a78);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.popup{
+    background-color: rgba(239, 66, 66, 0.76);;
+    width: 70%;
+    height: 10%;
+    border-radius: 10px;
+    display: none;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1%;
+}
+
+.popup_text{
+    font-size: 1rem;
+    font-family: monospace;
+    color: #000000;
+}
+
+.container{
+    width: 30vw;
+    height: 70vh;
+    background-color: rgba(66, 7, 100, 0.4);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: auto;
+    align-items: center;
+    backdrop-filter: blur(10px);
+
+}
+
+.text_form{
+    font-family: monospace;
+    font-size: 1.3rem;
+    padding: 3%;
+    color: #4def42;
+}
+
+.button{
+    cursor: pointer;
+    width: 10vw;
+    height: 5vh;
+    margin-top: 5%;
+    border-radius: 10px;
+    background-color:rgb(97, 234, 17);
+    font-family: monospace;
+    font-size: 1.2rem;
+    border: 0.2rem #d912ef solid;
+    transform: scale(1);
+    transition: all .15s ease-in-out;
+
+}
+
+.button:hover{
+    transform: scale(1.5);
+
+}
+
+.input_text{
+    border-radius: 7px;
+    text-align: center;
+    width: 50%;
+    height: 1.7rem;
+    font-size: 0.85rem;
+    border: none;
+}
+
+.graph_canvas{
+    width: fit-content;
+    height: auto;
+
+}
+
+.top{
+    flex-grow: 1;
+}
+
+.footer{
+    background-color: rgb(97, 234, 17);
+    height: 12vh;
+    display: flex;
+    flex-direction: row;
+}
+
+.footer_img{
+    width: 15%;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.radio_conteiner{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.radio_group{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+}
+
+.radio_col{
+    color: #4def42;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.radio_label{
+    padding-top: .3rem;
+    padding-bottom: .3rem;
+    font-size: 1rem;
+}
+
+.radio_r_container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.radio_r_group{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+}
+
+.radio_r_col{
+    color: #4def42;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
