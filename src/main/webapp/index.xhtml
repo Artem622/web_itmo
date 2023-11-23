@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/templLayout.xhtml">
+    <ui:define name="head">
+        <title>Start page</title>
+    </ui:define>
+
+    <ui:define name="main">
+        <div class="index_wrapper">
+            <div class="index_container">
+                <p class="index_text">Стартовая страница</p>
+                <h:form styleClass="">
+                    <h:outputText id="clock" value="#{ clock.time}" styleClass="index_clock"/>
+                    <p:poll interval="5" update="clock" listener="#{ clock.updateTime}"/>
+                </h:form>
+                <h:button outcome="main"  styleClass="btn" value="Перейти к графику"/>
+            </div>
+        </div>
+    </ui:define>
+    <ui:define name="footer">
+        <div class="footer">
+            <img src="/resources/slogan-chernyy.svg" class="footer_img"/>
+        </div>
+    </ui:define>
+</ui:composition>
+</html>

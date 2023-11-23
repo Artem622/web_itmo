@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+>
+
+<ui:composition template="/templates/templLayout.xhtml" >
+    <ui:define name="head">
+        <title>Lab3 - Main page</title>
+    </ui:define>
+    <ui:define name="main">
+        <div class="main_wrap">
+        <div class="content">
+            <div class="container">
+                <canvas class="graph_canvas" width="300px" height="300px" id="graph"></canvas>
+            </div>
+
+            <h:form class="container" id="form">
+                <label  id="x-label" class="label-text">Choose X: </label>
+                <div class="wrapper-X">
+                    <p:commandButton styleClass="cmdbtn" value = "-3"  id="btn1" onclick = "joke1();"  />
+                    <p:commandButton styleClass="cmdbtn" value = "-2"  id="btn2" onclick = "joke2();" />
+                    <p:commandButton styleClass="cmdbtn" value = "-1"  id="btn3" onclick = "joke3();" />
+                    <p:commandButton styleClass="cmdbtn" value = "0"  id="btn4" onclick = "joke4();" />
+                    <p:commandButton styleClass="cmdbtn" value = "1"  id="btn5" onclick = "joke5();" />
+                    <p:commandButton styleClass="cmdbtn" value = "2"  id="btn6" onclick = "joke6();" />
+                    <p:commandButton styleClass="cmdbtn" value = "3"  id="btn7" onclick = "joke7();" />
+                    <p:commandButton styleClass="cmdbtn" value = "4"  id="btn8" onclick = "joke8();" />
+                    <p:commandButton styleClass="cmdbtn" value = "5"  id="btn9" onclick = "joke9();" />
+                </div>
+
+
+                <label  id="y-label" class="label-text">Choose Y: </label>
+                <h:inputText id="y-value"  styleClass="yLabel"  onchange="jokeY()"/>
+                <h:inputHidden id="x-answer-value" value="#{ybean.value}" />
+
+
+
+
+                    <h:outputText class="popup_text" id="y_popup_text" styleClass="popup" value="число должно находится от -5 до 3"></h:outputText>
+
+                <h:inputHidden id="x-hidden-value" value="#{xUnvalidatedBean.value}" />
+                <h:inputHidden id="y-hidden-value" value="#{yUnvalidatedBean.value}" />
+
+
+
+
+                <label  id="r-label" class="label-text">Choose R: </label>
+                <h:selectOneRadio value="#{rbean.value}" onclick="setR(value)" styleClass="radio-input" id="rRadio" >
+                    <f:selectItem itemValue = "1" itemLabel = "1" />
+                    <f:selectItem itemValue = "2" itemLabel = "2" />
+                    <f:selectItem itemValue = "3" itemLabel = "3" />
+                    <f:selectItem itemValue = "4" itemLabel = "4" />
+                    <f:selectItem itemValue = "5" itemLabel = "5" />
+                </h:selectOneRadio>
+
+                <p:commandButton
+                        onclick="test()"
+                        class="btn"
+                        value="Shot"
+                        update="results"
+                />
+                <p:commandButton
+                        action="#{resultsBean.addResult(xUnvalidatedBean.value, yUnvalidatedBean.value, rbean.value)}"
+                        id = "testButton"
+                        value="test"
+                        style = "display: none"
+                        update="results"
+                />
+                <p:commandButton
+                        action="#{resultsBean.addResult(xbean.value, ybean.value, rbean.value)}"
+                        id = "fakeMainButton"
+                        onclick="drawResultUser()"
+                        value="test"
+                        style = "display: none"
+                        update="results"
+                />
+            </h:form>
+            <p:commandButton
+                    id = "fakeRButton1"
+                    action="#{xbean.setValue(-3.0)}"
+                    onclick="setX(-3,'form:btn1')"
+                    value="test"
+                    style = "display: none"
+            />
+            <p:commandButton
+                    id = "fakeRButton2"
+                    action="#{xbean.setValue(-2.0)}"
+                    onclick="setX(-2,'form:btn2')"
+                    value="test"
+                    style = "display: none"
+            />
+            <p:commandButton
+                    id = "fakeRButton3"
+                    action="#{xbean.setValue(-1.0)}"
+                    onclick="setX(-1,'form:btn3')"
+                    value="test"
+                    style = "display: none"
+            />
+            <p:commandButton
+                    id = "fakeRButton4"
+                    action="#{xbean.setValue(0.0)}"
+                    onclick="setX(0,'form:btn4')"
+                    value="test"
+                    style = "display: none"
+            />
+            <p:commandButton
+                    id = "fakeRButton5"
+                    action="#{xbean.setValue(1.0)}"
+                    onclick="setX(1,'form:btn5')"
+                    value="test"
+                    style = "display: none"
+            />
+            <p:commandButton
+                    id = "fakeRButton6"
+                    action="#{xbean.setValue(2.0)}"
+                    onclick="setX(2,'form:btn6')"
+                    value="test"
+                    style = "display: none"
+            />
+            <p:commandButton
+                    id = "fakeRButton7"
+                    action="#{xbean.setValue(3.0)}"
+                    onclick="setX(3,'form:btn7')"
+                    value="test"
+                    style = "display: none"
+            />
+            <p:commandButton
+                    id = "fakeRButton8"
+                    action="#{xbean.setValue(4.0)}"
+                    onclick="setX(4,'form:btn8')"
+                    value="test"
+                    style = "display: none"
+            />
+            <p:commandButton
+                    id = "fakeRButton9"
+                    action="#{xbean.setValue(5.0)}"
+                    onclick="setX(5,'form:btn9')"
+                    value="test"
+                    style = "display: none"
+            />
+            <p:commandButton
+                    id = "fakeYButton"
+                    onclick="Ytap()"
+                    value="test"
+                    style = "display: none"
+            />
+        </div>
+            <div class="result-table">
+
+                <p:dataTable id="results" var="result" value="#{resultsBean.results}">
+
+                    <p:column headerText="X" styleClass="header-text-table">
+                        <h:outputText value="#{result.x}"/>
+                    </p:column>
+
+                    <p:column headerText="Y" styleClass="header-text-table">
+                        <h:outputText value="#{result.y}" />
+                    </p:column>
+
+                    <p:column headerText="R" styleClass="header-text-table">
+                        <h:outputText value="#{result.r}" />
+                    </p:column>
+
+                    <p:column headerText="Результат" styleClass="header-text-table">
+                        <h:outputText value="#{result.isHit}" />
+                    </p:column>
+
+                    <p:column headerText="Время" styleClass="header-text-table">
+                        <h:outputText value="#{result.dateTime}" />
+                    </p:column>
+
+                    <p:column headerText="Время работы скрипта" styleClass="header-text-table">
+                        <h:outputText value="#{result.workTime}" />
+                    </p:column>
+                </p:dataTable>
+            </div>
+        </div>
+        <h:outputScript name="js/main.js"/>
+    </ui:define>
+</ui:composition>
+
+</html>
