@@ -35,6 +35,7 @@ export default {
     mounted() {
         setInterval(() => {
             this.currentDateTime = new Date().toLocaleString();
+
         }, 1000);
     },
 
@@ -45,7 +46,8 @@ export default {
         },
 
         logOut(){
-            console.log("exit")
+            localStorage.removeItem('token')
+            router.push('/')
         },
 
         applyTheme() {
@@ -59,7 +61,8 @@ export default {
             this.applyTheme()
         }, "setTheme")
         this.applyTheme()
-    }
+    },
+
 }
 </script>
 

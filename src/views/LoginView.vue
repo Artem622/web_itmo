@@ -1,5 +1,6 @@
 <template>
     <HeaderComp/>
+    <PopupComp :is-visible="isPopupVisible" :popup-text="popupText" @closed="clearPopupText"></PopupComp>
     <div :class="{ 'dark-theme': isDarkTheme, 'light-theme': isLightTheme }">
         <div class="container">
             <div class="form">
@@ -19,7 +20,7 @@
                             </div>
                         </div>
                     </div>
-                    <button class="cool-btn">Войти</button>
+                    <button class="cool-btn" @click="logIn">Войти</button>
                     <p class="logUp"  @click.prevent='logUp'>Нет аккаунта?</p>
                 </div>
             </div>
@@ -30,10 +31,15 @@
 <script>
 import HeaderComp from '@/components/HeaderComp.vue'
 import router from "@/router";
+// import {createModel} from "@/api/createModel";
+import axios from "axios";
+import PopupComp from "@/components/Popup.vue";
+import apiConf from "@/api/api.conf";
 
 export default {
     name: 'LoginView',
     components: {
+        PopupComp,
         HeaderComp
     },
     data() {
@@ -42,14 +48,66 @@ export default {
             pass: null,
             showPassword: false,
             isDarkTheme: false,
-            isLightTheme: false
+            isLightTheme: false,
+            isPopupVisible: false,
+            popupText: ''
         }
     },
 
 
     methods:{
         logIn(){
-            console.log('войти')
+            const url = `${apiConf.host}/login`
+            const data = {
+                login: this.login,
+                password: this.pass
+            }
+
+            if (this.login != null && this.pass != null) {
+                try {
+                    axios.post(url, data).then(response => {
+                        localStorage.setItem('token', response.data)
+                        this.$store.commit('setToken', localStorage.getItem('token'))
+                        // Обработка успешного выполнения запроса
+                        console.log('Успешный ответ от сервера:', response.data);
+                        router.push('/main');
+                        this.getAndSetToken()
+
+                    }).catch(error => {
+
+                        // Обработка ошибок при выполнении запроса
+                        if (error.response) {
+                            // Запрос выполнен, но сервер вернул код ошибки
+                            console.error('Ошибка от сервера:', error.response.status, error.response.data);
+
+                            if (error.response.status === 404) {
+                                // Обработка ошибки 404
+                                this.openPopupSomebody()
+                                console.error('Страница не найдена');
+                            } else if (error.response.status === 500) {
+
+                                this.openPopupNotApproved()
+                                console.error('Внутренняя ошибка сервера');
+                            }
+                        } else if (error.request) {
+                            // Запрос был сделан, но нет ответа
+                            this.openPopupSomebody()
+                            console.error('Запрос не получил ответ');
+
+                        } else {
+                            // Ошибка при настройке запроса
+                            this.openPopupSomebody()
+                            console.error('Ошибка настройки запроса:', error.message);
+                        }
+                    });
+                } catch (error) {
+                    // Обработка ошибок, которые не связаны с выполнением запроса
+                    console.error('Произошла неожиданная ошибка:', error);
+                    this.openPopupSomebody()
+                }
+            } else {
+                this.openPopup();
+            }
         },
 
         logUp(){
@@ -57,17 +115,46 @@ export default {
             router.push('/logUp')
         },
 
+        openPopup() {
+            this.popupText = 'Поля не могут быть пустыми';
+            this.isPopupVisible = true;
+        },
+
+        openPopupNotApproved(){
+            this.popupText = 'Неверное имя пользователя или пароль';
+            this.isPopupVisible = true;
+        },
+
+        openPopupSomebody(){
+            this.popupText = 'Что-то пошло не так, попробуйте снова';
+            this.isPopupVisible = true;
+        },
+
+        clearPopupText() {
+            this.isPopupVisible = false;
+        },
+
         show(){
             this.showPassword = !this.showPassword
         },
-
 
         applyTheme() {
             this.isDarkTheme = this.$store.getters.getTheme === 'dark'
             this.isLightTheme = this.$store.getters.getTheme === 'light'
         },
+
+        getAndSetToken(){
+            let token = localStorage.getItem('token')
+            console.log(token)
+        },
+        checkToken(){
+            if(localStorage.getItem('token') != null){
+                router.push('/main')
+            }
+        }
     },
     created() {
+        this.checkToken()
         this.$store.subscribe(() => {
             this.applyTheme()
         }, "setTheme")

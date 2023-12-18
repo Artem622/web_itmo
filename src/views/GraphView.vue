@@ -77,8 +77,7 @@ export default {
             isDarkTheme: false,
             isLightTheme: false,
             tableData: [
-                { column1: '0.5', column2: '1', column3: '1,34', column4: 'true', column5: '12323234124' },
-                { column1: '0.5', column2: '1', column3: '1,34', column4: 'true', column5: '12323234124' },
+
             ]
         }
     },
@@ -159,6 +158,7 @@ export default {
             this.applyTheme()
         }, "setTheme")
         this.applyTheme()
+        this.tableData = this.$store.getters.getDots
     },
 }
 

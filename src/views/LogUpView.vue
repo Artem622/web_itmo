@@ -1,5 +1,6 @@
 <template>
     <HeaderComp/>
+    <PopupComp :is-visible="isPopupVisible" :popup-text="popupText" @closed="clearPopupText"></PopupComp>
     <div :class="{ 'dark-theme': isDarkTheme, 'light-theme': isLightTheme }">
         <div class="container">
             <div class="form">
@@ -32,7 +33,7 @@
                             </div>
                         </div>
                     </div>
-                    <button class="cool-btn" @click="test">Create</button>
+                    <button class="cool-btn" @click="createAccount">Create</button>
                     <p class="logUp"  @click.prevent='back'>Назад</p>
                 </div>
             </div>
@@ -44,9 +45,13 @@
 <script>
 import HeaderComp from '@/components/HeaderComp.vue'
 import router from "@/router";
+import PopupComp from "@/components/Popup.vue";
+import apiConf from "@/api/api.conf";
+import axios from "axios";
 export default {
     name: 'LoginView',
     components: {
+        PopupComp,
         HeaderComp
     },
     data() {
@@ -57,7 +62,9 @@ export default {
             retryPass: null,
             showPassword: false,
             isDarkTheme: false,
-            isLightTheme: false
+            isLightTheme: false,
+            isPopupVisible: false,
+            popupText: ''
         }
     },
     methods:{
@@ -69,13 +76,88 @@ export default {
             router.push('/')
         },
 
-        test(){
-            console.log(eval(this.name))
+        createAccount(){
+            const url = `${apiConf.host}/create`
+            const data = {
+                login: this.login,
+                password: this.pass
+            }
+            if (this.login != null && this.pass != null && this.name != null && this.retryPass != null) {
+                if(this.pass != this.retryPass){
+                    this.openPopupNotApproved()
+                }else {
+                    try {
+                        axios.post(url, data).then(response => {
+
+                            // Обработка успешного выполнения запроса
+                            console.log('Успешный ответ от сервера:', response.data);
+                            router.push('/');
+
+                        }).catch(error => {
+
+                            // Обработка ошибок при выполнении запроса
+                            if (error.response) {
+                                // Запрос выполнен, но сервер вернул код ошибки
+                                console.error('Ошибка от сервера:', error.response.status, error.response.data);
+
+                                if (error.response.status === 404) {
+                                    // Обработка ошибки 404
+                                    this.openPopupSomebody()
+                                    console.error('Страница не найдена');
+                                } else if (error.response.status === 500) {
+
+                                    this.openPopupSomebody()
+                                    console.error('Внутренняя ошибка сервера');
+                                }
+                            } else if (error.request) {
+                                // Запрос был сделан, но нет ответа
+                                this.openPopupSomebody()
+                                console.error('Запрос не получил ответ');
+
+                            } else {
+                                // Ошибка при настройке запроса
+                                this.openPopupSomebody()
+                                console.error('Ошибка настройки запроса:', error.message);
+                            }
+                        });
+                    } catch (error) {
+                        // Обработка ошибок, которые не связаны с выполнением запроса
+                        console.error('Произошла неожиданная ошибка:', error);
+                        this.openPopupSomebody()
+                    }
+
+                }
+
+
+            } else {
+                this.openPopup();
+            }
+
+
         },
 
         applyTheme() {
             this.isDarkTheme = this.$store.getters.getTheme === 'dark'
             this.isLightTheme = this.$store.getters.getTheme === 'light'
+        },
+
+        clearPopupText() {
+            this.isPopupVisible = false;
+        },
+
+        openPopup() {
+            this.popupText = 'Поля не могут быть пустыми';
+            this.isPopupVisible = true;
+        },
+
+        openPopupNotApproved(){
+            this.popupText = 'Пароли не совпадают';
+            this.isPopupVisible = true;
+        },
+
+        openPopupSomebody(){
+            this.popupText = 'Что-то пошло не так, попробуйте снова';
+            this.isPopupVisible = true;
         },
     },
     created() {
