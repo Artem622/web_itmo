@@ -35,8 +35,11 @@ export default {
     mounted() {
         setInterval(() => {
             this.currentDateTime = new Date().toLocaleString();
-
+            this.checkToken()
         }, 1000);
+        setInterval(() => {
+            this.checkToken()
+        }, 1);
     },
 
     methods:{
@@ -54,6 +57,16 @@ export default {
             this.isDarkTheme = this.$store.getters.getTheme === 'dark'
             this.isLightTheme = this.$store.getters.getTheme === 'light'
         },
+
+        checkToken() {
+            // Проверка наличия токена в локальном хранилище
+            const authToken = localStorage.getItem('token');
+
+            if (!authToken) {
+                // Вызов метода при отсутствии токена
+                this.logOut()
+            }
+        }
     },
 
     created() {

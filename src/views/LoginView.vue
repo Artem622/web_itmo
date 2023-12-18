@@ -445,6 +445,5 @@ export default {
         width: 10%;
         height: auto;
     }
-
 }
 </style>

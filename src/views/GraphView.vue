@@ -131,9 +131,13 @@ export default {
             this.popupText = 'Не надо вводить некорректные математические выражения';
             this.isPopupVisible = true;
         },
+
+
+
         clearPopupText() {
             this.isPopupVisible = false;
         },
+
 
         changeY(){
             this.expression = this.expression.replace(/(\d+),(\d+)(?![^\\(]*\))/g, '$1.$2')
@@ -151,6 +155,21 @@ export default {
                 this.openPopupMath()
                 this.expression = null
             }
+        },
+
+        logOut(){
+            localStorage.removeItem('token')
+            router.push('/')
+        },
+
+        checkToken() {
+            // Проверка наличия токена в локальном хранилище
+            const authToken = localStorage.getItem('token');
+
+            if (!authToken) {
+                // Вызов метода при отсутствии токена
+                this.logOut()
+            }
         }
     },
     created() {
@@ -160,6 +179,12 @@ export default {
         this.applyTheme()
         this.tableData = this.$store.getters.getDots
     },
+
+    mounted() {
+        setInterval(() => {
+            this.checkToken()
+        }, 1);
+    }
 }
 
 </script>
