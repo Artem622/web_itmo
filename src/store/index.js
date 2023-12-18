@@ -4,6 +4,8 @@ const store = createStore({
     state: {
         theme: "light",
         r: 2,
+        y: null,
+        x: null
     },
 
     getters:{
@@ -13,6 +15,14 @@ const store = createStore({
 
         getRadius(state){
             return state.r
+        },
+
+        getX(state){
+            return state.x
+        },
+
+        getY(state){
+            return state.y
         }
     },
 
@@ -25,6 +35,16 @@ const store = createStore({
         setRadius(state, radius){
             state.r = radius
             console.log("radius change", state.r)
+        },
+
+        setX(state, x){
+            state.x = x
+            console.log('set in x store', state.x)
+        },
+
+        setY(state, y){
+            state.y = y
+            console.log('set in y store', state.y)
         }
     },
 

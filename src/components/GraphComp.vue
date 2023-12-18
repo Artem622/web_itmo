@@ -11,7 +11,9 @@ export default {
         return{
             x: 1,
             y: 1,
-            r: null
+            r: null,
+            badPointColor: '#cc1b71',
+            coolPointColor: '#2dff00'
         }
     },
     methods:{
@@ -22,7 +24,7 @@ export default {
             let cellSize = 25;
             // Изменяем цвета
             context.strokeStyle = 'black'; // Цвет обводки клеток
-            context.fillStyle = 'rgb(97, 234, 17)'; // Цвет заливки клеток
+            context.fillStyle = 'rgb(93,197,31)'; // Цвет заливки клеток
 
             // Количество клеток в ширину и высоту, основываясь на новом размере
             let numRows = (graph.height / cellSize )
@@ -101,17 +103,12 @@ export default {
                 context.fillText(-(y - centerY) / stepY, graph.width / 2 +7, y + 5); // Рисуем число
             }
         },
+
+
         test(){
             this.drawGraph()
         },
 
-        test1(event){
-            let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-            const {x,y} = isSafari ? { x: event.layerX, y: event.layerY } : { x: event.offsetX, y: event.offsetY }
-
-            console.log(x,y)
-            return (x,y)
-        },
 
         drawGraph(){
             const graph = this.$refs.graph
@@ -168,12 +165,18 @@ export default {
             const {x,y} = isSafari ? { x: event.layerX, y: event.layerY } : { x: event.offsetX, y: event.offsetY }
             const graph = this.$refs.graph
             const context = graph.getContext("2d")
-            context.fillStyle='#cc1b71'
+            if(this.checkShot(this.convertInputX(x), this.convertInputY(y))){
+                context.fillStyle = this.coolPointColor
+            }else {
+                context.fillStyle = this.badPointColor
+            }
             context.beginPath();
             context.arc(x,y,3, 0, Math.PI*2, false);
             context.closePath()
             context.fill()
             console.log(x,y)
+            this.$store.commit("setX", this.convertInputX(x))
+            this.$store.commit("setY",  this.convertInputY(y))
         },
 
         // конвертация х в координаты ДПСК
@@ -184,6 +187,73 @@ export default {
         //конвертация у в координаты ДПСК
         convertInputY(y){
             return -(y/25-6)
+        },
+
+        // проверка на попадание в график
+        checkShot(x,y){
+          const r = this.$store.getters.getRadius
+
+            if(r > 0){
+
+                // 2 quarter
+                if (x <= 0 && y >= 0){
+                    return (Math.abs(x) <= Math.abs(r/2)) && (Math.abs(y) <= Math.abs(r))
+                }
+
+                // 4 quarter
+                if (x >= 0 && y <= 0){
+                    let temp = x - r
+                    return y >= temp
+                }
+
+                // 1 quarter
+                if (x >= 0 && y >= 0){
+                    return (Math.abs(x) <= Math.abs(r/2)) && (Math.abs(y) <= Math.abs(r/2)) && (Math.pow(x,2) + Math.pow(y,2) <= Math.pow(r/2,2))
+                }
+
+                return false
+
+            }
+            if (r < 0){
+                // 2 quarter
+                if (x <= 0 && y >= 0){
+                    return (y - x - Math.abs(r)) <= 0
+                }
+
+                // 3 quarter
+                if (x <= 0 && y <= 0){
+                    return (Math.abs(x) <= Math.abs(r/2)) && (Math.abs(y) <= Math.abs(r/2)) && (Math.pow(x,2) + Math.pow(y,2) <= Math.pow(r/2,2))
+                }
+
+                // 4 quarter
+                if (x >= 0 && y <= 0){
+                    return (Math.abs(x) <= Math.abs(r/2)) && (Math.abs(y) <= Math.abs(r))
+                }
+
+                return false
+            }
+
+            if(r == 0){
+                return false
+            }
+        },
+
+        drawPointFromForm(){
+            console.log('test')
+            let x = this.$store.getters.getX
+            let y = this.$store.getters.getY
+            const graph = this.$refs.graph
+            const context = graph.getContext("2d")
+            if(this.checkShot(x,y)){
+                context.fillStyle = this.coolPointColor
+            }else {
+                context.fillStyle = this.badPointColor
+            }
+            context.beginPath();
+            context.arc(x*25+150,-y*25+150,3, 0, Math.PI*2, false);
+            context.closePath()
+            context.fill()
+            console.log(this.checkShot())
         }
 
     },
@@ -195,6 +265,7 @@ export default {
             this.r = this.$store.getters.getRadius
             console.log(this.r,'trs')
         }, "setRadius")
+
     },
     mounted() {
         this.drawGraph()

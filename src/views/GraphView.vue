@@ -1,18 +1,19 @@
 <template>
     <HeaderComp/>
+    <PopupComp :is-visible="isPopupVisible" :popup-text="popupText" @closed="clearPopupText"></PopupComp>
     <div :class="{ 'dark-theme': isDarkTheme, 'light-theme': isLightTheme }">
             <div class="container">
                 <GraphComp ref="GraphComp"/>
                 <div class="controllers">
                     <div class="input-x">
                         <label class="text" for="dropdownX">Выберите значение x:</label>
-                        <select id="dropdownX"  v-model="selectedValueX">
+                        <select id="dropdownX" v-model="selectedValueX">
                             <option class="text" v-for="value in dropdownValuesX" :key="value" :value="value">{{ value }}</option>
                         </select>
                     </div>
                     <div class="input-y">
                         <p class="text">Выберите значение y:</p>
-                        <input class="inp" v-model="selectedValueY">
+                        <input class="inp" @change="changeY" v-model="expression">
                     </div>
                     <div class="input-r">
                         <label class="text" for="dropdownR">Выберите значение r:</label>
@@ -53,10 +54,13 @@
 import HeaderComp from "@/components/HeaderComp.vue";
 import GraphComp from "@/components/GraphComp.vue";
 import router from "@/router";
+import PopupComp from "@/components/Popup.vue";
+
 
 export default {
     name: 'LoginView',
     components: {
+        PopupComp,
         HeaderComp,
         GraphComp
     },
@@ -64,9 +68,12 @@ export default {
         return{
             dropdownValuesX: ['-2', '-1.5', '-1', '-0.5', '0', '0.5', '1', '1.5', '2'],
             selectedValueX: 2,
-            dropdownValuesR: ['-2', '-1.5', '-1', '-0.5', '0', '0.5', '1', '1.5', '2'],
-            selectedValueR: -1,
+            dropdownValuesR: ['-4', '-3', '-2', '-1', '0', '1', '2', '3', '4'],
+            selectedValueR: 2,
             selectedValueY: 2,
+            expression: 2,
+            isPopupVisible: false,
+            popupText: '',
             isDarkTheme: false,
             isLightTheme: false,
             tableData: [
@@ -79,6 +86,7 @@ export default {
         toMain(){
             console.log('на главную')
             router.push('/main')
+            this.openPopup()
         },
 
 
@@ -94,7 +102,56 @@ export default {
         },
 
         check(){
-            this.$store.commit("setRadius", this.selectedValueR)
+            if(-3 <= this.selectedValueY && this.selectedValueY <= 3){
+                console.log(this.selectedValueY)
+                this.$store.commit("setX", this.selectedValueX)
+                this.$store.commit("setY",  this.selectedValueY)
+                console.log(this.$store.getters.getX, this.$store.getters.getY)
+                this.$refs.GraphComp.drawPointFromForm()
+            }else {
+                this.openPopup()
+                this.expression = null
+            }
+
+        },
+
+        isValidExpression() {
+            const validExpressionRegex = /^[\d+\-*/().]|Math\.[a-z]+\([^\\)]*\)|[+\-*/]$/;
+            console.log('норм')
+            console.log( validExpressionRegex.test(this.expression))
+            return validExpressionRegex.test(this.expression);
+        },
+
+
+        openPopup() {
+            this.popupText = 'Значение Y должно быть от -3 до 3';
+            this.isPopupVisible = true;
+        },
+
+        openPopupMath() {
+            this.popupText = 'Не надо вводить некорректные математические выражения';
+            this.isPopupVisible = true;
+        },
+        clearPopupText() {
+            this.isPopupVisible = false;
+        },
+
+        changeY(){
+            this.expression = this.expression.replace(/(\d+),(\d+)(?![^\\(]*\))/g, '$1.$2')
+            console.log(this.selectedValueY)
+            if (this.isValidExpression()){
+                try {
+                    eval(this.expression)
+                    this.selectedValueY = eval(this.expression)
+                    console.log(this.selectedValueY)
+                } catch (er){
+                    console.log(er)
+                    this.expression = null
+                }
+            }else{
+                this.openPopupMath()
+                this.expression = null
+            }
         }
     },
     created() {
@@ -102,7 +159,7 @@ export default {
             this.applyTheme()
         }, "setTheme")
         this.applyTheme()
-    }
+    },
 }
 
 </script>
@@ -304,6 +361,7 @@ export default {
         border: none;
         color: black;
         padding-left: .5rem;
+        font-weight: 600;
     }
 
     .cool-btn{
