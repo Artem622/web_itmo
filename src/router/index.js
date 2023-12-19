@@ -26,6 +26,11 @@ const routes = [
     name: 'graph',
     component: () => import(/* webpackChunkName: "about" */ '../views/GraphView.vue')
   },
+  {
+    path: "/test",
+    name: 'test',
+    component: () => import(/* webpackChunkName: "about" */ '../components/SocketComp.vue')
+  }
 
 
 

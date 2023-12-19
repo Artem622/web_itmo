@@ -1,4 +1,5 @@
 <template>
+    <SocketComp></SocketComp>
     <HeaderComp/>
     <PopupComp :is-visible="isPopupVisible" :popup-text="popupText" @closed="clearPopupText"></PopupComp>
     <div :class="{ 'dark-theme': isDarkTheme, 'light-theme': isLightTheme }">
@@ -36,7 +37,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr class="table-row" v-for="(item, index) in tableData" :key="index">
+                        <tr class="table-row" v-for="item in filteredItems" :key="item.x">
                             <td class="table-d">{{ item.x }}</td>
                             <td class="table-d">{{ item.y }}</td>
                             <td class="table-d">{{ item.r }}</td>
@@ -57,14 +58,22 @@ import router from "@/router";
 import PopupComp from "@/components/Popup.vue";
 import apiConf from "@/api/api.conf";
 import axios from "axios";
+import SocketComp from "@/components/SocketComp.vue";
 
 
 export default {
     name: 'LoginView',
     components: {
+        SocketComp,
         PopupComp,
         HeaderComp,
         GraphComp
+    },
+    computed:{
+        filteredItems() {
+            return this.tableData.filter(item => item.r == this.$store.getters.getRadius);
+        },
+
     },
     data(){
         return{
@@ -102,19 +111,17 @@ export default {
             console.log(this.selectedValueR)
             this.getDotsFromBack().then(()=>{
                 this.tableData = this.$store.getters.getDots
-                console.log(this.$store.getters.getDots)
-                console.log(this.tableData)
             })
         },
 
         check(){
-
             if(-3 <= this.selectedValueY && this.selectedValueY <= 3){
                 console.log(this.selectedValueY)
                 this.$store.commit("setX", this.selectedValueX)
                 this.$store.commit("setY",  this.selectedValueY)
                 console.log(this.$store.getters.getX, this.$store.getters.getY)
                 this.$refs.GraphComp.drawPointFromForm()
+                this.tableData = this.$store.getters.getDots;
             }else {
                 this.openPopup()
                 this.expression = null
@@ -228,7 +235,6 @@ export default {
             const userId = this.$store.getters.getUserId;
             const url = `${apiConf.host}/cords/getAll`;
             const data = { user_id: userId };
-
             return axios.post(url, data)
                     .then(response => {
                         console.log('Успешный ответ от сервера:', response.data);
@@ -259,6 +265,11 @@ export default {
         this.$store.subscribe(() => {
             this.applyTheme();
         }, "setTheme");
+        // this.$store.subscribe(() => {
+        //     this.tableData = [...this.$store.getters.getDots];
+        //     console.log('1488')
+        //     console.log(this.tableData)
+        // }, "setDots");
     },
 
     mounted() {

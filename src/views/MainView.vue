@@ -1,4 +1,5 @@
 <template>
+    <SocketComp></SocketComp>
     <HeaderComp/>
     <div :class="{ 'dark-theme': isDarkTheme, 'light-theme': isLightTheme }">
         <div class="wrap">
@@ -19,9 +20,11 @@
 <script>
 import HeaderComp from '@/components/HeaderComp.vue'
 import router from "@/router";
+import SocketComp from "@/components/SocketComp.vue";
 export default {
     name: 'LoginView',
     components: {
+        SocketComp,
         HeaderComp
     },
     data() {
