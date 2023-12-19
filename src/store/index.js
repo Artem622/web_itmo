@@ -7,12 +7,8 @@ const store = createStore({
         y: null,
         x: null,
         token: null,
-        dots: [
-            { column1: '0.5', column2: '1', column3: '1,34', column4: 'true', column5: '12323234124' },
-            { column1: '0.5', column2: '1', column3: '1,34', column4: 'true', column5: '12323234124' },
-            { column1: '0.5', column2: '1', column3: '1,34', column4: 'true', column5: '12323234124' },
-            { column1: '0.5', column2: '1', column3: '1,34', column4: 'true', column5: '12323234124' },
-        ],
+        user_id: null,
+        dots: [],
     },
 
     getters:{
@@ -38,6 +34,10 @@ const store = createStore({
 
         getToken(state){
             return state.token
+        },
+
+        getUserId(state){
+            return state.user_id
         }
     },
 
@@ -65,6 +65,16 @@ const store = createStore({
         setToken(state, token){
             state.token = token
             console.log('token is set')
+        },
+
+        setUserId(state, userId){
+            state.user_id = userId
+            console.log('userId is set')
+        },
+
+        setDots(state, dots){
+            state.dots = dots
+            console.log('dots is set')
         }
     },
 

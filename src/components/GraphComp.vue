@@ -5,6 +5,9 @@
 </template>
 
 <script>
+import apiConf from "@/api/api.conf";
+import axios from "axios";
+
 export default {
     name: 'GraphComp',
     data(){
@@ -105,9 +108,7 @@ export default {
         },
 
 
-        test(){
-            this.drawGraph()
-        },
+
 
 
         drawGraph(){
@@ -163,6 +164,9 @@ export default {
         drawPoint(event){
             let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
             const {x,y} = isSafari ? { x: event.layerX, y: event.layerY } : { x: event.offsetX, y: event.offsetY }
+            let r = this.$store.getters.getRadius
+            let userId = this.$store.getters.getUserId
+            this.sendPoint(this.convertInputX(x), this.convertInputY(y), r, userId)
             const graph = this.$refs.graph
             const context = graph.getContext("2d")
             if(this.checkShot(this.convertInputX(x), this.convertInputY(y))){
@@ -242,6 +246,9 @@ export default {
             console.log('test')
             let x = this.$store.getters.getX
             let y = this.$store.getters.getY
+            let r = this.$store.getters.getRadius
+            let userId = this.$store.getters.getUserId
+            this.sendPoint(x, y, r, userId)
             const graph = this.$refs.graph
             const context = graph.getContext("2d")
             if(this.checkShot(x,y)){
@@ -254,6 +261,33 @@ export default {
             context.closePath()
             context.fill()
             console.log(this.checkShot())
+        },
+
+        sendPoint(x, y, r, user_id){
+            const url = `${apiConf.host}/cords/add`
+            const data = {
+                x: x,
+                y: y,
+                r: r,
+                user_id: user_id
+            }
+
+            try {
+                axios.post(url, data)
+                        .then(response => {
+                            // Обработка успешного выполнения запроса
+                            console.log('Успешный ответ от сервера:', response.data);
+                            // Дополнительные действия при успешном запросе
+                        })
+                        .catch(error => {
+                            // Обработка ошибки
+                            console.error('Ошибка при выполнении запроса:', error);
+                            // Дополнительные действия при ошибке
+                        });
+            } catch (error) {
+                // Обработка ошибок, возникающих до отправки запроса
+                console.error('Ошибка:', error);
+            }
         }
 
     },

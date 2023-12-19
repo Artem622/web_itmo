@@ -37,11 +37,11 @@
                         </thead>
                         <tbody>
                         <tr class="table-row" v-for="(item, index) in tableData" :key="index">
-                            <td class="table-d">{{ item.column1 }}</td>
-                            <td class="table-d">{{ item.column2 }}</td>
-                            <td class="table-d">{{ item.column3 }}</td>
-                            <td class="table-d">{{ item.column4 }}</td>
-                            <td class="table-d">{{ item.column5 }}</td>
+                            <td class="table-d">{{ item.x }}</td>
+                            <td class="table-d">{{ item.y }}</td>
+                            <td class="table-d">{{ item.r }}</td>
+                            <td class="table-d">{{ item.isHit }}</td>
+                            <td class="table-d">{{ item.date }}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -55,6 +55,8 @@ import HeaderComp from "@/components/HeaderComp.vue";
 import GraphComp from "@/components/GraphComp.vue";
 import router from "@/router";
 import PopupComp from "@/components/Popup.vue";
+import apiConf from "@/api/api.conf";
+import axios from "axios";
 
 
 export default {
@@ -98,9 +100,15 @@ export default {
             this.$store.commit("setRadius", this.selectedValueR)
             this.$refs.GraphComp.drawGraph()
             console.log(this.selectedValueR)
+            this.getDotsFromBack().then(()=>{
+                this.tableData = this.$store.getters.getDots
+                console.log(this.$store.getters.getDots)
+                console.log(this.tableData)
+            })
         },
 
         check(){
+
             if(-3 <= this.selectedValueY && this.selectedValueY <= 3){
                 console.log(this.selectedValueY)
                 this.$store.commit("setX", this.selectedValueX)
@@ -132,12 +140,9 @@ export default {
             this.isPopupVisible = true;
         },
 
-
-
         clearPopupText() {
             this.isPopupVisible = false;
         },
-
 
         changeY(){
             this.expression = this.expression.replace(/(\d+),(\d+)(?![^\\(]*\))/g, '$1.$2')
@@ -170,14 +175,90 @@ export default {
                 // Вызов метода при отсутствии токена
                 this.logOut()
             }
-        }
+        },
+
+        // async setUserId(){
+        //     const url = `${apiConf.host}/find`
+        //     const data = {
+        //         token: localStorage.getItem('token')
+        //     }
+        //     try {
+        //         axios.post(url, data).then(response => {
+        //                     // Обработка успешного выполнения запроса
+        //                     console.log('Успешный ответ от сервера:', response.data);
+        //                     this.$store.commit('setUserId', response.data)
+        //                 })
+        //                 .catch(error => {
+        //                     // Обработка ошибки
+        //                     console.error('Ошибка при выполнении запроса:', error);
+        //
+        //                 });
+        //     } catch (error) {
+        //         // Обработка ошибок, возникающих до отправки запроса
+        //         console.error('Ошибка:', error);
+        //     }
+        // },
+
+        setUserId() {
+            const url = `${apiConf.host}/find`;
+            const data = {
+                token: localStorage.getItem('token')
+            };
+
+            return new Promise((resolve, reject) => {
+                try {
+                    axios.post(url, data)
+                            .then(response => {
+                                console.log('Успешный ответ от сервера:', response.data);
+                                this.$store.commit('setUserId', response.data);
+                                resolve();
+                            })
+                            .catch(error => {
+                                console.error('Ошибка при выполнении запроса:', error);
+                                reject(error);
+                            });
+                } catch (error) {
+                    console.error('Ошибка:', error);
+                    reject(error);
+                }
+            });
+        },
+
+        getDotsFromBack() {
+            const userId = this.$store.getters.getUserId;
+            const url = `${apiConf.host}/cords/getAll`;
+            const data = { user_id: userId };
+
+            return axios.post(url, data)
+                    .then(response => {
+                        console.log('Успешный ответ от сервера:', response.data);
+                        this.$store.commit('setDots', response.data)
+                    })
+                    .catch(error => {
+                        console.error('Ошибка при выполнении запроса:', error);
+                    });
+        },
+
+
+        initializeData() {
+            this.setUserId()
+                    .then(() => {
+                        return this.getDotsFromBack();
+                    })
+                    .then(() => {
+                        this.tableData = this.$store.getters.getDots;
+                    })
+                    .catch(error => {
+                        console.error('Ошибка при выполнении запроса:', error);
+                    });
+        },
     },
     created() {
+        this.applyTheme();
+        this.initializeData();
         this.$store.subscribe(() => {
-            this.applyTheme()
-        }, "setTheme")
-        this.applyTheme()
-        this.tableData = this.$store.getters.getDots
+            this.applyTheme();
+        }, "setTheme");
     },
 
     mounted() {
