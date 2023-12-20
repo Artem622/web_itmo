@@ -19,6 +19,7 @@ export default {
     mounted() {
         // Подписка на событие 'connect'
         socket.on('connect', () => {
+            this.sendDataToSocket()
             this.socketStatus = 'Connected';
         });
 
@@ -27,5 +28,11 @@ export default {
             this.socketStatus = 'Disconnected';
         });
     },
+    methods: {
+        sendDataToSocket() {
+            // Отправка данных на сервер сокетов
+            socket.emit('sendToServer', { token: localStorage.getItem('token') })
+        },
+    }
 };
 </script>

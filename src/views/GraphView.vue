@@ -42,7 +42,8 @@
                             <td class="table-d">{{ item.y }}</td>
                             <td class="table-d">{{ item.r }}</td>
                             <td class="table-d">{{ item.isHit }}</td>
-                            <td class="table-d">{{ item.date }}</td>
+<!--                            <td class="table-d">{{ item.date.slice(11, 20) }}</td>-->
+                            <td class="table-d">{{ item.date}}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -184,27 +185,7 @@ export default {
             }
         },
 
-        // async setUserId(){
-        //     const url = `${apiConf.host}/find`
-        //     const data = {
-        //         token: localStorage.getItem('token')
-        //     }
-        //     try {
-        //         axios.post(url, data).then(response => {
-        //                     // Обработка успешного выполнения запроса
-        //                     console.log('Успешный ответ от сервера:', response.data);
-        //                     this.$store.commit('setUserId', response.data)
-        //                 })
-        //                 .catch(error => {
-        //                     // Обработка ошибки
-        //                     console.error('Ошибка при выполнении запроса:', error);
-        //
-        //                 });
-        //     } catch (error) {
-        //         // Обработка ошибок, возникающих до отправки запроса
-        //         console.error('Ошибка:', error);
-        //     }
-        // },
+
 
         setUserId() {
             const url = `${apiConf.host}/find`;
@@ -239,6 +220,7 @@ export default {
                     .then(response => {
                         console.log('Успешный ответ от сервера:', response.data);
                         this.$store.commit('setDots', response.data)
+
                     })
                     .catch(error => {
                         console.error('Ошибка при выполнении запроса:', error);
@@ -258,6 +240,8 @@ export default {
                         console.error('Ошибка при выполнении запроса:', error);
                     });
         },
+
+
     },
     created() {
         this.applyTheme();
@@ -265,18 +249,14 @@ export default {
         this.$store.subscribe(() => {
             this.applyTheme();
         }, "setTheme");
-        // this.$store.subscribe(() => {
-        //     this.tableData = [...this.$store.getters.getDots];
-        //     console.log('1488')
-        //     console.log(this.tableData)
-        // }, "setDots");
+
     },
 
     mounted() {
         setInterval(() => {
             this.checkToken()
         }, 1);
-    }
+    },
 }
 
 </script>
@@ -394,7 +374,7 @@ export default {
         color: black;
         font-size: 1.7em;
         font-weight: 600;
-        padding: 1%;
+        padding: 1rem;
     }
 
     .table-row {
@@ -524,7 +504,7 @@ export default {
         color: white;
         font-size: 1.7em;
         font-weight: 600;
-        padding: 1%;
+        padding: 1rem;
     }
 
     .table-row {

@@ -249,6 +249,7 @@ export default {
             let r = this.$store.getters.getRadius
             let userId = this.$store.getters.getUserId
             this.sendPoint(x, y, r, userId)
+
             const graph = this.$refs.graph
             const context = graph.getContext("2d")
             if(this.checkShot(x,y)){
@@ -275,17 +276,17 @@ export default {
             try {
                 axios.post(url, data)
                         .then(response => {
-                            // Обработка успешного выполнения запроса
+
                             console.log('Успешный ответ от сервера:', response.data);
-                            // Дополнительные действия при успешном запросе
+
                         })
                         .catch(error => {
-                            // Обработка ошибки
+
                             console.error('Ошибка при выполнении запроса:', error);
-                            // Дополнительные действия при ошибке
+
                         });
             } catch (error) {
-                // Обработка ошибок, возникающих до отправки запроса
+
                 console.error('Ошибка:', error);
             }
         }
